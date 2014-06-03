@@ -1,0 +1,369 @@
+<?php
+require_once("saime.php");
+require_once("seniat.php");
+require_once("banco.php");
+require_once("vivienda.php");
+require_once("moviles.php");
+
+class Servicios {
+ function Servicio001($Cedula)
+ {
+  try {
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Saime();
+       $datos = $objetoDatos->BuscarPersona($Cedula);
+       if ($datos[0]=="true")	
+       {
+        $datos1 = $datos1.'{"existe":"true",';
+        $datos1 = $datos1.'"nombre":"'.$datos[1].'",';
+        $datos1 = $datos1.'"apellido":"'.$datos[2].'",';
+        $datos1 = $datos1.'"direccion":"'.$datos[3].'",';
+        $datos1 = $datos1.'"telefono":"'.$datos[4].'",';
+        $datos1 = $datos1.'"correo":"'.$datos[5].'",';
+        $datos1 = $datos1.'"estadocivil":"'.$datos[6].'",';
+        $datos1 = $datos1.'"ciudad":"'.$datos[7].'",';
+        $datos1 = $datos1.'"municipio":"'.$datos[8].'",';
+        $datos1 = $datos1.'"estado":"'.$datos[9].'"}';
+       }
+       else
+       {
+        $datos1 = '{"existe":"false"}';
+       }
+    }
+    catch (Exception $e) {
+     $datos1 = '{"existe":"false"}';
+     }   
+    return $datos1;
+ }
+ 
+ //Servicio buscar todos los estados de Venezuela
+ function Servicio002()
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Saime();
+       $datos = $objetoDatos->BuscarEstados();
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" ,"numfilas":"'.$datos[1].'" , "estados":[';
+	       
+	for ($i=0; $i<($datos[1]); $i++) 
+	{
+	  if($i!=$datos[1]-1)
+	  {
+            $datos1 = $datos1.'{"idestado":"'.$datos[$i+2]['idestado'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}, ';
+          }
+	  else
+	  {
+	    $datos1 = $datos1.'{"idestado":"'.$datos[$i+2]['idestado'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}]}';
+            
+	  }
+	}
+        
+        }
+       else {
+        $datos1 = '{"exito":"false"}';
+        }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+      }   
+     return $datos1;
+ }
+ 
+ //Servicio buscar todos los municipios de un estado de Venezuela
+ function Servicio003($estado)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Saime();
+       $datos = $objetoDatos->BuscarMunicipios($estado);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" ,"numfilas":"'.$datos[1].'" , "municipios":[';
+	       
+	for ($i=0; $i<($datos[1]); $i++) 
+	{
+	  if($i!=$datos[1]-1)
+	  {
+            $datos1 = $datos1.'{"idmunicipio":"'.$datos[$i+2]['idmunicipio'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}, ';
+          }
+	  else
+	  {
+	    $datos1 = $datos1.'{"idmunicipio":"'.$datos[$i+2]['idmunicipio'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}]}';
+            
+	  }
+	}
+        
+       }
+       else {
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+     }   
+     return $datos1;
+ }
+
+ //Servicio buscar todas las ciudades de un estado de Venezuela
+ function Servicio004($estado)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Saime();
+       $datos = $objetoDatos->BuscarCiudadesEstado($estado);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" ,"numfilas":"'.$datos[1].'" , "ciudades":[';
+	       
+	for ($i=0; $i<($datos[1]); $i++) 
+	{
+	  if($i!=$datos[1]-1)
+	  {
+            $datos1 = $datos1.'{"idciudad":"'.$datos[$i+2]['idciudad'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}, ';
+          }
+	  else
+	  {
+	    $datos1 = $datos1.'{"idciudad":"'.$datos[$i+2]['idciudad'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}]}';
+            
+	  }
+	}
+        
+       }
+       else {
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+     }   
+     return $datos1;
+ }
+//Servicio buscar todas las ciudades de un municipio de Venezuela
+ function Servicio005($municipio,$estado)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Saime();
+       $datos = $objetoDatos->BuscarCiudadesMunicipio($municipio,$estado);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" ,"numfilas":"'.$datos[1].'" , "ciudades":[';
+	       
+	for ($i=0; $i<($datos[1]); $i++) 
+	{
+	  if($i!=$datos[1]-1)
+	  {
+            $datos1 = $datos1.'{"idciudad":"'.$datos[$i+2]['idciudad'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}, ';
+          }
+	  else
+	  {
+	    $datos1 = $datos1.'{"idciudad":"'.$datos[$i+2]['idciudad'].'", ';
+            $datos1 = $datos1.'"descripcion":"'.$datos[$i+2]['descripcion'].'"}]}';
+            
+	  }
+	}
+        
+       }
+       else {
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+     }   
+     return $datos1;
+ }
+//Servicio buscar rif
+ function Servicio006($rif)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Seniat();
+       $datos = $objetoDatos->BuscarRif($rif);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"existe":"'.$datos[0].'" ,"nombre":"'.$datos[1].'" ,"razonsocial":"'.$datos[2].'" }';
+      
+       }
+       else {
+        $datos1 = '{"existe":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"existe":"false"}';
+      }   
+     return $datos1;
+ }
+
+//Servicio consultar cuenta bancaria
+ function Servicio007($cuentabancaria)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Banco();
+       $datos = $objetoDatos->ConsultarCuentaBancaria($cuentabancaria);
+
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"existe":"'.$datos[0].'" ,"tipocuenta":"'.$datos[1].'" ,"personaid":"'.$datos[2].'","banco":"'.$datos[3].'" }';
+             }
+       else {
+        $datos1 = '{"existe":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"existe":"false"}';
+     }   
+     return $datos1;
+ }
+
+//Servicio abonar TDC
+ function Servicio008($numtarjeta,$cedtitular,$mesexpiracion,$annoexpiracion,$codseguridad,$monto)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Banco();
+       $datos = $objetoDatos->AbonarTDC($numtarjeta,$cedtitular,$mesexpiracion,$annoexpiracion,$codseguridad,$monto);
+       
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" }';
+       }
+       else 
+	{
+        $datos1 = '{"exito":"false","error":"'.$datos[1].'" }';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false","error":"'.$datos[1].'"}';
+      }   
+     return $datos1;
+ }
+
+//Servicio Validar Transaccion Bancaria
+ function Servicio009($numreferencia,$idbanco,$cedula,$monto,$fecha)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Banco();
+       $datos = $objetoDatos->ValidarTransaccion($numreferencia,$idbanco,$cedula,$monto,$fecha);
+       
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"true","tipotransaccion":"'.$datos[1].'"  }';
+       }
+       else 
+	{
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+      }   
+     return $datos1;
+ }
+// Servicio Consultar Bancos
+function Servicio010()
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Banco();
+       $datos = $objetoDatos->ConsultarBancos();
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'" ,"numfilas":"'.$datos[1].'" , "bancos":[';
+	       
+	for ($i=0; $i<($datos[1]); $i++) 
+	{
+	  if($i!=$datos[1]-1)
+	  {
+            $datos1 = $datos1.'{"idbanco":"'.$datos[$i+2]['idbanco'].'", ';
+	    $datos1 = $datos1.'"rif":"'.$datos[$i+2]['rif'].'", ';
+            $datos1 = $datos1.'"nombre":"'.$datos[$i+2]['nombre'].'"}, ';
+          }
+	  else
+	  {
+	    $datos1 = $datos1.'{"idbanco":"'.$datos[$i+2]['idbanco'].'", ';
+	    $datos1 = $datos1.'"rif":"'.$datos[$i+2]['rif'].'", ';
+            $datos1 = $datos1.'"nombre":"'.$datos[$i+2]['nombre'].'"}]}';
+            
+	  }
+	}
+        1;
+       }
+       else {
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+     }   
+     return $datos1;
+ }
+//Servicio Validar Copropietario de Inmueble
+ function Servicio011($cedcopropietario,$codcatastral)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Vivienda();
+       $datos = $objetoDatos->ValidarCopropietarioInmueble($cedcopropietario,$codcatastral);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'"}';
+       }
+       else 
+	{
+        $datos1 = '{"exito":"false","error":"'.$datos[1].'"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false","error":"'.$datos[1].'"}';
+     }   
+     return $datos1;
+ }
+//Servicio Consultar Inmueble
+ function Servicio012($codcatastral)
+ {
+  try { 
+       $datos = array();
+       $datos1 = "";
+       $objetoDatos = new Vivienda();
+       $datos = $objetoDatos->ConsultarInmueble($codcatastral);
+       if ($datos[0]=="true")
+       {
+        $datos1 = $datos1.'{"exito":"'.$datos[0].'","numinmueble":"'.$datos[1].'","metrocuadrado":"'.$datos[2].'",
+			"alicuota":"'.$datos[3].'","direccion":"'.$datos[4].'","fechadocumento":"'.$datos[5].'",
+			"cedcopropietario":"'.$datos[7].$datos[6].'"}';
+       }
+       else 
+	{
+        $datos1 = '{"exito":"false"}';
+       }
+     }
+     catch (Exception $e) {
+      $datos1 = '{"exito":"false"}';
+     }   
+     return $datos1;
+ }
+}
+?>

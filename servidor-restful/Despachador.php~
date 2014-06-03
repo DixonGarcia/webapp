@@ -1,0 +1,95 @@
+<?php
+/*********************************************************************************/
+/*                 Despechador.php
+/*********************************************************************************/
+/*
+  Autor  : Grupo EAI Dream Team A	
+  Version: 1.0 en PHP5
+  Fecha  : 12 de Febrero del 2014
+*/
+require_once("LibreriadelDespachador.php");
+class Despachador {
+
+ function despachar()
+ {
+  $servicio = $_REQUEST['servicio'];
+  $objServicio = new Servicios();
+  switch ($servicio) {
+    case 1:
+        //Servicio buscar una persona dada su cedula
+  	$cedula = $_REQUEST['cedula'];
+        $contenido = $objServicio->Servicio001($cedula);
+        break;
+    case 2:
+        //Servicio buscar todos los estados de Venezuela
+        $contenido = $objServicio->Servicio002();
+        break;
+    case 3:
+        //Servicio buscar todos los municipios de un estado
+	$estado = $_REQUEST['estado'];
+        $contenido = $objServicio->Servicio003($estado);
+        break;
+    case 4:
+        //Servicio buscar todas las ciudades de un estado
+	$estado = $_REQUEST['estado'];
+        $contenido = $objServicio->Servicio004($estado);
+        break;
+    case 5:
+        //Servicio buscar todas las ciudades de un municipio de un estado
+	$municipio = $_REQUEST['municipio'];
+	$estado = $_REQUEST['estado'];
+        $contenido = $objServicio->Servicio005($municipio,$estado);
+        break;
+    case 6:
+        //Servicio buscar RIF
+	$rif = $_REQUEST['rif'];
+        $contenido = $objServicio->Servicio006($rif);
+        break;
+    case 7:
+        //Servicio Consultar Cuenta Bancaria
+	$cuentabancaria = $_REQUEST['cuentabancaria'];
+        $contenido = $objServicio->Servicio007($cuentabancaria);
+        break;
+
+    case 8:
+        //Servicio Abonar TDC
+	$numtarjeta = $_REQUEST['numtarjeta'];
+	$cedtitular= $_REQUEST['cedtitular'];
+	$mesexpiracion= $_REQUEST['mesexpiracion'];
+	$annoexpiracion= $_REQUEST['annoexpiracion'];
+	$codseguridad= $_REQUEST['codseguridad'];
+	$monto= $_REQUEST['monto'];
+        $contenido = $objServicio->Servicio008($numtarjeta,$cedtitular,$mesexpiracion,$annoexpiracion,$codseguridad,$monto);
+        break;
+    case 9:
+        //Servicio Validar Transaccion Bancaria
+	$numreferencia = $_REQUEST['numreferencia'];
+	$idbanco= $_REQUEST['idbanco'];
+	$cedula= $_REQUEST['cedula'];
+	$monto= $_REQUEST['monto'];
+	$fecha= $_REQUEST['fecha'];
+	$contenido = $objServicio->Servicio009($numreferencia,$idbanco,$cedula,$monto,$fecha);
+        break;
+    case 10:
+        //Servicio Consultar Bancos
+	$contenido = $objServicio->Servicio010();
+        break;
+    case 11:
+        //Servicio Verificar Copropietario de Inmueble
+	$cedpropietario = $_REQUEST['cedcopropietario'];
+	$codcatastral= $_REQUEST['codcatastral'];
+	$contenido = $objServicio->Servicio011($cedpropietario,$codcatastral);
+        break;
+    case 12:
+        //Servicio Consultar Inmueble
+	$codcatastral= $_REQUEST['codcatastral'];
+	$contenido = $objServicio->Servicio012($codcatastral);
+        break;
+  }
+  echo $contenido;
+  return true;
+ }
+}
+$objDespachador = new Despachador();
+$objDespachador->despachar();
+?>
